@@ -596,7 +596,7 @@
             userCollectionRef.update({ orders: data.orders }).then(() => {
               console.log('Order status updated successfully!');
               alert('Order status updated successfully!');
-              window.location.href = "page-orders-1.html";
+              window.location.href = "page-orders.html";
             }).catch((error) => {
               console.log('Error updating order status:', error);
             });
@@ -648,7 +648,7 @@
             // Update the orders array in the Firestore document
             userCollectionRef.update({ orders: data.orders }).then(() => {
               console.log('Order deleted successfully!');
-              window.location.href = "page-orders-1.html";
+              window.location.href = "page-orders.html";
             }).catch((error) => {
               console.log('Error deleting order:', error);
             });
