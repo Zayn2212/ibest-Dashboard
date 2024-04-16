@@ -695,13 +695,11 @@
         docRefAll.set(data)
           .then(function () {
             console.log("Document added to subcategory All with ID " + docId + "'.");
-            //alert('Product added Successfully!');
-            //window.location.href = 'page-form-product-3.html';
           })
           .catch(function (error) {
             console.error("Error adding document to subcategory All", error);
+            alert('Failed to add Product!');
           });
-
 
         // Update productsNo field by incrementing it
         docRefCategory.update({
@@ -709,6 +707,8 @@
         })
           .then(() => {
             console.log("productsNo field updated successfully!");
+            alert('Product added Successfully!');
+            window.location.href = 'page-add-product.html';
           })
           .catch((error) => {
             console.error("Error updating productsNo field: ", error);
