@@ -455,7 +455,7 @@
         // Fetch data from Firestore
         productsCollectionRef.get().then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
-            const date = new Date(doc.data().date.seconds * 1000 + doc.data().date.nanoseconds / 1000000);
+            const date = new Date(doc.data().registeredDate.seconds * 1000 + doc.data().registeredDate.nanoseconds / 1000000);
             const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
             if (selectedDate && Object.keys(selectedDate).length !== 0) {
               const selectDate = new Date(selectedDate);
