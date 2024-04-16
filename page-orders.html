@@ -139,7 +139,7 @@
     <footer class="main-footer font-xs">
       <div class="row pb-30 pt-15">
         <div class="col-sm-6">
-          <script>document.write(new Date().getFullYear())</script> &copy;, ibest.
+          <script>document.write(new Date().getFullYear())</script> &copy;, ibest - HTML ibestmerce Template .
         </div>
         <div class="col-sm-6">
           <div class="text-sm-end">All rights reserved</div>
@@ -248,6 +248,38 @@
     var docId = {};
     var orderId = {};
     var status = {};
+    var count = 0;
+
+    function fetchOrders() {
+      const ordersCollectionRef = firebase.firestore().collection('users');
+      ordersCollectionRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const userData = doc.data();
+          userData.orders.forEach((order) => {
+            if (order.viewed === false) {
+              count++;
+            }
+          });
+        });
+        var badge = document.getElementById("notification-badge");
+        badge.textContent = count;
+      }).catch((error) => {
+        console.log("Error fetching order notification.");
+      });
+    }
+
+    fetchOrders();
+
+    // Function to sign out the admin
+    function adminOutUser() {
+      firebase.auth().signOut().then(function () {
+        console.log('admin signed out successfully');
+        alert('Admin signed out successfully!');
+        window.location.href = 'index.html';
+      }).catch(function (error) {
+        console.error('Error signing out:', error);
+      });
+    }
 
 
 
@@ -596,7 +628,7 @@
             userCollectionRef.update({ orders: data.orders }).then(() => {
               console.log('Order status updated successfully!');
               alert('Order status updated successfully!');
-              window.location.href = "page-orders.html";
+              window.location.href = "page-orders-1.html";
             }).catch((error) => {
               console.log('Error updating order status:', error);
             });
@@ -648,7 +680,7 @@
             // Update the orders array in the Firestore document
             userCollectionRef.update({ orders: data.orders }).then(() => {
               console.log('Order deleted successfully!');
-              window.location.href = "page-orders.html";
+              window.location.href = "page-orders-1.html";
             }).catch((error) => {
               console.log('Error deleting order:', error);
             });
@@ -734,40 +766,6 @@
           return '';
       }
     }
-
-    var count = 0;
-
-    function fetchOrders() {
-      const ordersCollectionRef = firebase.firestore().collection('users');
-      ordersCollectionRef.get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const userData = doc.data();
-          userData.orders.forEach((order) => {
-            if (order.viewed === false) {
-              count++;
-            }
-          });
-        });
-        var badge = document.getElementById("notification-badge");
-        badge.textContent = count;
-      }).catch((error) => {
-        console.log("Error fetching order notification.");
-      });
-    }
-
-    fetchOrders();
-
-    // Function to sign out the admin
-    function adminOutUser() {
-      firebase.auth().signOut().then(function () {
-        console.log('admin signed out successfully');
-        alert('Admin signed out successfully!');
-        window.location.href = 'index.html';
-      }).catch(function (error) {
-        console.error('Error signing out:', error);
-      });
-    }
-
 
   </script>
 </body>
