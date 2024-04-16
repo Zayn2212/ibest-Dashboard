@@ -479,6 +479,8 @@
             })
               .then(function () {
                 console.log("Category document successfully written!");
+                alert("Category added Successfully!");
+                window.location.href = 'page-add-category.html';
               })
               .catch(function (error) {
                 console.error("Error writing category document: ", error);
