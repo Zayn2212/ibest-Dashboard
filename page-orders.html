@@ -16,6 +16,15 @@
 </head>
 
 <body>
+  <div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+      <div class="preloader-inner position-relative">
+        <div class="text-center"><img class="mb-10" src="assets/imgs/theme/favicon.svg" alt="ibest">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="screen-overlay"></div>
   <aside class="navbar-aside" id="offcanvas_aside">
     <div class="aside-top"><a class="brand-wrap" href="page-dashboard.html"><img class="logo"
@@ -186,7 +195,7 @@
             <h3 class="modal-title" id="orderDetailModalLabel">Order Detail</h3>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body" id="orderDetailModalBody">
+          <div class="modal-body" id="orderDetailModalBody" style="height: 400px; overflow-y: auto;">
             <!-- Order details will be dynamically inserted here -->
           </div>
           <div class="modal-footer d-flex justify-content-center">
@@ -521,7 +530,7 @@
             const data = doc.data();
             const order = filterOrderByID(data.orders, orderID);
             if (order) {
-              const productRef = firestore.collection('products').doc(order.category).collection(order.subCategory).doc(orderID);
+              const productRef = firestore.collection('products').doc(order.category).collection(order.subCategory).doc(order.productId);
               productRef.get()
                 .then((doc) => {
                   if (doc.exists) {
@@ -532,16 +541,27 @@
                     let newPrice = product.price - discountedPrice;
                     // Generate HTML content for the order details
                     const orderDetailsHTML = `
-                      <p><strong>Name:</strong> ${data.Name}</p>
-                      <p><strong>Email:</strong> ${data.Email}</p>
+                      <p><strong>Name:</strong> ${order.orderInfo.firstName} ${order.orderInfo.lastName}</p>
+                      <p><strong>Contact email:</strong> ${order.orderInfo.contactEmail}</p>
+                      <p><strong>Phone number:</strong> ${order.orderInfo.phoneNo}</p>
                       <p><strong>Product:</strong> ${product.product}</p>
-                      <p><strong>Product ID:</strong> ${doc.id}</p>
+                      <p><strong>Order ID:</strong> ${order.orderId}</p>
                       <p><strong>Original Price:</strong> R ${product.price}</p>
                       <p><strong>Discount:</strong> ${product.discount} %</p>
-                      <p><strong>Discount Price:</strong> R ${newPrice}</p>
-                      <p><strong>Quantity:</strong> ${order.orderQuantity}</p>
-                      <p><strong>Total Price:</strong> R ${order.totalPrice}</p>
-                      <p><strong>Order Date:</strong> ${order.orderDate}</p>
+                      <p><strong>Discount Price:</strong> R ${Math.floor(newPrice)}</p>
+                      <p><strong>Quantity:</strong> ${order.productSpecs.quantity}</p>
+                      <p><strong>Total Price:</strong> R ${Math.floor(order.totalPrice)}</p>
+                      <p><strong>Colour:</strong> ${order.productSpecs.color}</p>
+                      <p><strong>Size:</strong> ${order.productSpecs.size}</p>
+                      <p><strong>Style:</strong> ${order.productSpecs.style}</p>
+                      <p><strong>Province:</strong> ${order.orderInfo.province}</p>
+                      <p><strong>City:</strong> ${order.orderInfo.city}</p>
+                      <p><strong>Address 1:</strong> ${order.orderInfo.address1 ? order.orderInfo.address1 : "N/A"}</p>
+                      <p><strong>Address 2:</strong> ${order.orderInfo.address2 ? order.orderInfo.address2 : "N/A"}</p>
+                      <p><strong>City:</strong> ${order.orderInfo.city}</p>
+                      <p><strong>Post code / ZIP:</strong> ${order.orderInfo.postCode}</p>
+                      <p><strong>Additional Info:</strong> ${order.orderInfo.additionalInfo ? order.orderInfo.additionalInfo : "N/A"}</p>
+                      <p><strong>Order Date:</strong> ${formatDate(order.orderDate)}</p>
                       <!-- Add more order details as needed -->
                     `;
 
@@ -570,6 +590,7 @@
           console.log('Error getting document:', error);
         });
     }
+
 
     function editStatus(docID, orderID) {
       docId = docID;
@@ -628,7 +649,7 @@
             userCollectionRef.update({ orders: data.orders }).then(() => {
               console.log('Order status updated successfully!');
               alert('Order status updated successfully!');
-              window.location.href = "page-orders-1.html";
+              window.location.href = "page-orders.html";
             }).catch((error) => {
               console.log('Error updating order status:', error);
             });
@@ -680,7 +701,7 @@
             // Update the orders array in the Firestore document
             userCollectionRef.update({ orders: data.orders }).then(() => {
               console.log('Order deleted successfully!');
-              window.location.href = "page-orders-1.html";
+              window.location.href = "page-orders.html";
             }).catch((error) => {
               console.log('Error deleting order:', error);
             });
@@ -717,8 +738,10 @@
     }
 
     // Function to format date in "DD.MM.YYYY" format
-    function formatDate(date) {
-      const d = new Date(date);
+    function formatDate(timestamp) {
+      const seconds = timestamp.seconds;
+      const nanoseconds = timestamp.nanoseconds;
+      const d = new Date(seconds * 1000 + nanoseconds / 1000000); // Convert Firestore Timestamp to JavaScript Date
       const day = d.getDate().toString().padStart(2, '0');
       const month = (d.getMonth() + 1).toString().padStart(2, '0');
       const year = d.getFullYear();
