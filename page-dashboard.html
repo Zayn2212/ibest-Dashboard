@@ -16,6 +16,15 @@
 </head>
 
 <body>
+  <div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+      <div class="preloader-inner position-relative">
+        <div class="text-center"><img class="mb-10" src="assets/imgs/theme/favicon.svg" alt="ibest">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="screen-overlay"></div>
   <aside class="navbar-aside" id="offcanvas_aside">
     <div class="aside-top"><a class="brand-wrap" href="page-dashboard.html"><img class="logo"
@@ -87,7 +96,8 @@
             <article class="icontext"><span class="icon icon-sm rounded-circle bg-primary-light"><i
                   class="text-primary material-icons md-monetization_on"></i></span>
               <div class="text">
-                <h6 class="mb-1 card-title">Revenue</h6><span>0 R</span><span class="text-sm">Shipping fees are
+                <h6 class="mb-1 card-title">Revenue</h6><span id="revenueValue">0 R</span><span class="text-sm">Shipping
+                  fees are
                   not included</span>
               </div>
             </article>
@@ -98,7 +108,8 @@
             <article class="icontext"><span class="icon icon-sm rounded-circle bg-success-light"><i
                   class="text-success material-icons md-local_shipping"></i></span>
               <div class="text">
-                <h6 class="mb-1 card-title">Orders</h6><span>3</span><span class="text-sm">Excluding orders in
+                <h6 class="mb-1 card-title">Orders</h6><span id="ordersCount">0</span><span class="text-sm">Excluding
+                  orders in
                   transit</span>
               </div>
             </article>
@@ -109,7 +120,8 @@
             <article class="icontext"><span class="icon icon-sm rounded-circle bg-warning-light"><i
                   class="text-warning material-icons md-qr_code"></i></span>
               <div class="text">
-                <h6 class="mb-1 card-title">Products</h6><span>64</span><span class="text-sm">In 4 Categories</span>
+                <h6 class="mb-1 card-title">Products</h6><span id="productsCount">64</span><span class="text-sm"
+                  id="categoriesCount">In 0 Categories</span>
               </div>
             </article>
           </div>
@@ -119,7 +131,8 @@
             <article class="icontext"><span class="icon icon-sm rounded-circle bg-info-light"><i
                   class="text-info material-icons md-shopping_basket"></i></span>
               <div class="text">
-                <h6 class="mb-1 card-title">Monthly Earning</h6><span>0 R</span><span class="text-sm">Based in your
+                <h6 class="mb-1 card-title">Monthly Earning</h6><span id="monthlyEarning">0 R</span><span
+                  class="text-sm">Based in your
                   local time.</span>
               </div>
             </article>
@@ -139,34 +152,8 @@
           <div class="card mb-4">
             <article class="card-body">
               <h5 class="card-title">Wholesaller Members</h5>
-              <div class="new-member-list">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <div class="d-flex align-items-center"><img class="avatar" src="assets/imgs/people/avatar4.jpg"
-                      alt="">
-                    <div>
-                      <h6>Member 1</h6>
-                      <p class="text-muted font-xs">4321</p>
-                    </div>
-                  </div><a class="btn btn-xs" href="#"><i class="material-icons md-add"></i> Add</a>
-                </div>
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <div class="d-flex align-items-center"><img class="avatar" src="assets/imgs/people/avatar2.jpg"
-                      alt="">
-                    <div>
-                      <h6>Memeber 2</h6>
-                      <p class="text-muted font-xs">1234</p>
-                    </div>
-                  </div><a class="btn btn-xs" href="#"><i class="material-icons md-add"></i> Add</a>
-                </div>
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <div class="d-flex align-items-center"><img class="avatar" src="assets/imgs/people/avatar3.jpg"
-                      alt="">
-                    <div>
-                      <h6>Memeber 3</h6>
-                      <p class="text-muted font-xs">1234</p>
-                    </div>
-                  </div><a class="btn btn-xs" href="#"><i class="material-icons md-add"></i> Add</a>
-                </div>
+              <div class="new-member-list" style="height: 185px; overflow-y: auto;">
+                <!--Wholesale user show here-->
               </div>
             </article>
           </div>
@@ -387,7 +374,7 @@
               <h3 class="modal-title" id="orderDetailModalLabel">Order Detail</h3>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="orderDetailModalBody">
+            <div class="modal-body" id="orderDetailModalBody" style="height: 400px; overflow-y: auto;">
               <!-- Order details will be dynamically inserted here -->
             </div>
             <div class="modal-footer d-flex justify-content-center">
@@ -460,27 +447,126 @@
     var docId = {};
     var orderId = {};
     var status = {};
-    var count = 0;
 
-    function fetchOrders() {
+
+    function fetchData() {
       const ordersCollectionRef = firebase.firestore().collection('users');
+      var notificationCount = 0;
+      var revenue = 0;
+      var ordersCount = 0;
+      var categoriesCount = 0;
+      var productsCount = 0;
+      var monthyEarning = 0;
+      var currentMonth = new Date().getMonth() + 1;
+
       ordersCollectionRef.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           const userData = doc.data();
           userData.orders.forEach((order) => {
             if (order.viewed === false) {
-              count++;
+              notificationCount++;
             }
+
+            if (order.status === 'delivered') {
+              ordersCount++;
+            }
+
+            revenue += order.totalPrice;
+
+            var date = new Date(order.orderDate.seconds * 1000 + order.orderDate.nanoseconds / 1000000);
+            var monthNumber = date.getMonth() + 1;
+            if (monthNumber === currentMonth) {
+              monthyEarning += order.totalPrice;
+            }
+
           });
         });
+
         var badge = document.getElementById("notification-badge");
-        badge.textContent = count;
+        badge.textContent = notificationCount;
+
+        var revenueSpan = document.getElementById("revenueValue");
+        revenueSpan.textContent = Math.floor(revenue) + " R";
+
+        var ordersCountSpan = document.getElementById("ordersCount");
+        ordersCountSpan.textContent = ordersCount;
+
+        var monthlyEarningSpan = document.getElementById("monthlyEarning");
+        monthlyEarningSpan.textContent = Math.floor(monthyEarning) + " R";
+
       }).catch((error) => {
         console.log("Error fetching order notification.");
       });
+
+      firestore.collection("categories").get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            categoriesCount++;
+            var data = doc.data();
+            productsCount += parseFloat(data.ProductsNo);
+          });
+
+          var productSpan = document.getElementById("productsCount");
+          productSpan.textContent = productsCount;
+
+          var categorySpan = document.getElementById("categoriesCount");
+          categorySpan.textContent = "In " + categoriesCount + " categories";
+
+        }).catch((error) => {
+          console.error("Error reading documents: ", error);
+        });
     }
 
-    fetchOrders();
+    fetchData();
+    fetchWholesaleUsers();
+
+
+    function fetchWholesaleUsers() {
+      const userCollectionRef = firebase.firestore().collection('users');
+      const container = document.querySelector('.new-member-list');
+
+      userCollectionRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const userData = doc.data();
+          if (userData.wholesaleBuyer && userData.status === "No action taken") {
+            const memberDiv = document.createElement('div');
+            memberDiv.classList.add('d-flex', 'align-items-center', 'justify-content-between', 'mb-4');
+
+            const innerDiv = document.createElement('div');
+            innerDiv.classList.add('d-flex', 'align-items-center');
+
+            const userImage = userData.imageUrl ? `<img class="img-sm img-avatar" src="${userData.imageUrl}" alt="Userpic">` : `<i class="icon material-icons md-person img-avatar icon-with-margin"></i>`;
+            innerDiv.innerHTML = userImage;
+
+            const userInfoDiv = document.createElement('div');
+            const userName = document.createElement('h6');
+            userName.textContent = userData.Name; // assuming you have user's name data in your Firestore
+            const userCode = document.createElement('p');
+            userCode.classList.add('text-muted', 'font-xs');
+            userCode.textContent = userData.CompanyName; // assuming you have user's code data in your Firestore
+
+
+            userInfoDiv.appendChild(userName);
+            userInfoDiv.appendChild(userCode);
+            memberDiv.appendChild(innerDiv);
+            innerDiv.appendChild(userInfoDiv);
+
+            const addButton = document.createElement('a');
+            addButton.classList.add('btn', 'btn-xs');
+            addButton.setAttribute('href', 'page-sellers-list.html');
+            addButton.innerHTML = '<i class="material-icons md-add"></i> Add';
+
+            memberDiv.appendChild(innerDiv);
+            memberDiv.appendChild(addButton);
+
+            container.appendChild(memberDiv);
+          }
+
+        });
+      }).catch((error) => {
+        console.log("Error fetching wholesale users:", error);
+      });
+    }
 
     // Function to sign out the admin
     function adminOutUser() {
@@ -706,7 +792,7 @@
             const data = doc.data();
             const order = filterOrderByID(data.orders, orderID);
             if (order) {
-              const productRef = firestore.collection('products').doc(order.category).collection(order.subCategory).doc(orderID);
+              const productRef = firestore.collection('products').doc(order.category).collection(order.subCategory).doc(order.productId);
               productRef.get()
                 .then((doc) => {
                   if (doc.exists) {
@@ -717,16 +803,27 @@
                     let newPrice = product.price - discountedPrice;
                     // Generate HTML content for the order details
                     const orderDetailsHTML = `
-                      <p><strong>Name:</strong> ${data.Name}</p>
-                      <p><strong>Email:</strong> ${data.Email}</p>
+                      <p><strong>Name:</strong> ${order.orderInfo.firstName} ${order.orderInfo.lastName}</p>
+                      <p><strong>Contact email:</strong> ${order.orderInfo.contactEmail}</p>
+                      <p><strong>Phone number:</strong> ${order.orderInfo.phoneNo}</p>
                       <p><strong>Product:</strong> ${product.product}</p>
-                      <p><strong>Product ID:</strong> ${doc.id}</p>
+                      <p><strong>Order ID:</strong> ${order.orderId}</p>
                       <p><strong>Original Price:</strong> R ${product.price}</p>
                       <p><strong>Discount:</strong> ${product.discount} %</p>
-                      <p><strong>Discount Price:</strong> R ${newPrice}</p>
-                      <p><strong>Quantity:</strong> ${order.orderQuantity}</p>
-                      <p><strong>Total Price:</strong> R ${order.totalPrice}</p>
-                      <p><strong>Order Date:</strong> ${order.orderDate}</p>
+                      <p><strong>Discount Price:</strong> R ${Math.floor(newPrice)}</p>
+                      <p><strong>Quantity:</strong> ${order.productSpecs.quantity}</p>
+                      <p><strong>Total Price:</strong> R ${Math.floor(order.totalPrice)}</p>
+                      <p><strong>Colour:</strong> ${order.productSpecs.color}</p>
+                      <p><strong>Size:</strong> ${order.productSpecs.size}</p>
+                      <p><strong>Style:</strong> ${order.productSpecs.style}</p>
+                      <p><strong>Province:</strong> ${order.orderInfo.province}</p>
+                      <p><strong>City:</strong> ${order.orderInfo.city}</p>
+                      <p><strong>Address 1:</strong> ${order.orderInfo.address1 ? order.orderInfo.address1 : "N/A"}</p>
+                      <p><strong>Address 2:</strong> ${order.orderInfo.address2 ? order.orderInfo.address2 : "N/A"}</p>
+                      <p><strong>City:</strong> ${order.orderInfo.city}</p>
+                      <p><strong>Post code / ZIP:</strong> ${order.orderInfo.postCode}</p>
+                      <p><strong>Additional Info:</strong> ${order.orderInfo.additionalInfo ? order.orderInfo.additionalInfo : "N/A"}</p>
+                      <p><strong>Order Date:</strong> ${formatDate(order.orderDate)}</p>
                       <!-- Add more order details as needed -->
                     `;
 
@@ -813,7 +910,7 @@
             userCollectionRef.update({ orders: data.orders }).then(() => {
               console.log('Order status updated successfully!');
               alert('Order status updated successfully!');
-              window.location.href = "page-orders-1.html";
+              window.location.href = "page-dashboard.html";
             }).catch((error) => {
               console.log('Error updating order status:', error);
             });
@@ -865,7 +962,7 @@
             // Update the orders array in the Firestore document
             userCollectionRef.update({ orders: data.orders }).then(() => {
               console.log('Order deleted successfully!');
-              window.location.href = "page-orders-1.html";
+              window.location.href = "page-dashboard.html";
             }).catch((error) => {
               console.log('Error deleting order:', error);
             });
@@ -902,13 +999,16 @@
     }
 
     // Function to format date in "DD.MM.YYYY" format
-    function formatDate(date) {
-      const d = new Date(date);
+    function formatDate(timestamp) {
+      const seconds = timestamp.seconds;
+      const nanoseconds = timestamp.nanoseconds;
+      const d = new Date(seconds * 1000 + nanoseconds / 1000000); // Convert Firestore Timestamp to JavaScript Date
       const day = d.getDate().toString().padStart(2, '0');
       const month = (d.getMonth() + 1).toString().padStart(2, '0');
       const year = d.getFullYear();
       return `${day}.${month}.${year}`;
     }
+
 
     // Function to get the badge class based on order status
     function getStatusBadgeClass(status) {
