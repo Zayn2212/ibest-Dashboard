@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg">
+  <link href="assets/css/style.css?v=1.0.0" rel="stylesheet">
+  <title>ibest - Customization</title>
+</head>
+
+<body>
+  <div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+      <div class="preloader-inner position-relative">
+        <div class="text-center"><img class="mb-10" src="assets/imgs/theme/favicon.svg" alt="ibest">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-overlay"></div>
+  <aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top"><a class="brand-wrap" href="page-dashboard.html"><img class="logo"
+          src="assets/imgs/theme/favicon.svg" alt="Evara Dashboard"></a>
+      <div>
+        <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu-aside">
+        <li class="menu-item"><a class="menu-link" href="page-dashboard.html"><i
+              class="icon material-icons md-home"></i><span class="text">Dashboard</span></a></li>
+        <li class="menu-item"><a class="menu-link" href="page-products-list.html"><i
+              class="icon material-icons md-shopping_bag"></i><span class="text">Products</span></a></li>
+        <li class="menu-item"><a class="menu-link" href="page-orders.html"><i
+              class="icon material-icons md-shopping_cart"></i><span class="text">Orders</span></a></li>
+        <li class="menu-item"><a class="menu-link" href="page-sellers-list.html"><i
+              class="icon material-icons md-store"></i><span class="text">Wholesellers</span></a></li>
+        <li class="menu-item"><a class="menu-link" href="page-account-register.html"><i
+              class="icon material-icons md-person"></i><span class="text">Create Moderator</span></a></li>
+        <li class="menu-item active"><a class="menu-link" href="page-web-customization.html"><i
+              class="icon material-icons md-pie_chart"></i><span class="text">Customization</span></a></li>
+      </ul>
+      <hr>
+      <ul class="menu-aside">
+        <li class="menu-item"><a class="menu-link" href="page-settings.html"><i
+              class="icon material-icons md-settings"></i><span class="text">Settings</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="main-wrap">
+    <header class="main-header navbar">
+      <div class="col-search"></div>
+      <div class="col-nav">
+        <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+            class="material-icons md-apps"></i></button>
+        <ul class="nav">
+          <li class="nav-item"><a class="nav-link btn-icon" href="#"><i
+                class="material-icons md-notifications animation-shake"></i><span class="badge rounded-pill"
+                id="notification-badge">0</span></a></li>
+          <li class="nav-item"><a class="nav-link btn-icon darkmode" href="#"><i
+                class="material-icons md-nights_stay"></i></a></li>
+          <li class="nav-item"><a class="requestfullscreen nav-link btn-icon" href="#"><i
+                class="material-icons md-cast"></i></a></li>
+          <li class="nav-item"><a class="dropdown-toggle" id="dropdownAccount" data-bs-toggle="dropdown" href="#"
+              aria-expanded="false"><img class="img-xs rounded-circle" id="profile-pic" src="assets/imgs/people/avatar2.jpg"
+                alt="User"></a>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+              <a class="dropdown-item text-danger" onclick="adminOutUser()"><i
+                  class="material-icons md-exit_to_app"></i>Logout</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <section class="content-main">
+      <div class="row">
+        <div class="col-9">
+          <div class="content-header">
+            <div>
+              <h2 class="content-title card-title">Customization</h2>
+            </div>
+            <div><a onclick="save()" class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save</a></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h4>Shipping fee</h4>
+            </div>
+            <div class="card-body">
+              <div class="category-section" id="categorySection">
+                <!-- Initially show category and sub-category input fields -->
+                <div class="mb-4">
+                  <label class="form-label" for="product_shipping_fee">Shipping fee</label>
+                  <input class="form-control" id="product_shipping_fee" type="number" placeholder="Enter shipping fee">
+                </div>
+                <div class="mb-4">
+                  <label class="form-label" for="product_amount">Amount(Free shipping)</label>
+                  <input class="form-control" id="product_amount" type="number"
+                    placeholder="Enter the amount for free shipping">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h4>Banner</h4>
+            </div>
+            <div class="card-body">
+              <div class="input-upload" id="banner"><img src="assets/imgs/theme/upload.svg" alt="">
+                <input class="form-control" type="file">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="main-footer font-xs">
+      <div class="row pb-30 pt-15">
+        <div class="col-sm-6">
+          <script>document.write(new Date().getFullYear())</script> &copy;, ibest.
+        </div>
+        <div class="col-sm-6">
+          <div class="text-sm-end">All rights reserved</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/vendors/select2.min.js"></script>
+  <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+  <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+  <script src="assets/js/vendors/chart.js"></script>
+  <script src="assets/js/main.js?v=1.0.0"></script>
+  <script src="assets/js/custom-chart.js" type="text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKUrhFJiaHhFlqu0w3zKTyhIgXJNIIg68",
+      authDomain: "ibest-ba2cf.firebaseapp.com",
+      projectId: "ibest-ba2cf",
+      storageBucket: "ibest-ba2cf.appspot.com",
+      messagingSenderId: "946876798909",
+      appId: "1:946876798909:web:b40bc879e556a26cafe4d4",
+      measurementId: "G-QYR88B09WG"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    var firestore = firebase.firestore();
+    var auth = firebase.auth();
+
+    var bannerUrl = {};
+
+    function showAlert(text) {
+      Swal.fire({
+        title: text,
+        showClass: {
+          popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+          `
+        },
+        hideClass: {
+          popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+          `
+        },
+        confirmButtonColor: '#BF141F',
+        customClass: {
+          title: 'alertClass',
+          popup: 'alertClassPopup'
+        }
+      });
+    }
+
+    function showAlertWithNav(text,href) {
+      Swal.fire({
+        title: text,
+        showClass: {
+          popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+          `
+        },
+        hideClass: {
+          popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+          `
+        },
+        confirmButtonColor: '#BF141F',
+        customClass: {
+          title: 'alertClass',
+          popup: 'alertClassPopup'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.replace(href);
+        }
+      });
+    }
+
+    // Function to save the data and show it on console
+    function save() {
+      var shippingfee = document.getElementById('product_shipping_fee').value;
+      var amount = document.getElementById('product_amount').value;
+
+      if(!shippingfee || !amount){
+        showAlert("Please Enter all fields");
+        return;
+      }
+
+      var fileInput = document.querySelector('input[type="file"]');
+      var file = fileInput.files[0];
+
+      if (!file && !bannerUrl) {
+        showAlert("Please upload banner pic")
+      }
+
+      //console.log(file);
+
+      if (!file) {
+        firestore.collection("banner").doc("info").set({
+          shippingfee: shippingfee,
+          amount: amount,
+          bannerURL:bannerUrl
+        })
+          .then(function () {
+            console.log("Updated Successfully!");
+            showAlertWithNav("Updated Successfully!","page-web-customization.html");
+          })
+          .catch(function (error) {
+            console.error("Error writing document: ", error);
+          });
+      } else {
+        var storage = firebase.storage();
+        var storageRef = storage.ref();
+        var uploadTask = storageRef.child('images/banner').put(file);
+
+        uploadTask.on('state_changed',
+          function (snapshot) {
+            // Handle progress
+          },
+          function (error) {
+            console.error("Error uploading image: ", error);
+          },
+          function () {
+            console.log("Image uploaded successfully!");
+
+            uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+              firestore.collection("banner").doc("info").set({
+                shippingfeeUser: shippingfee,
+                amount: amount,
+                bannerURL: !file ? bannerUrl : downloadURL
+              })
+                .then(function () {
+                  console.log("Updated Successfully!");
+                  showAlertWithNav("Updated Successfully!","page-web-customization.html");
+                })
+                .catch(function (error) {
+                  console.error("Error writing document: ", error);
+                });
+            });
+          }
+        );
+      }
+    }
+
+    function fetchData() {
+      const ordersCollectionRef = firebase.firestore().collection('banner').doc('info');
+
+      ordersCollectionRef.get().then((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          document.getElementById('product_shipping_fee').value = data.shippingfee;
+          document.getElementById('product_amount').value = data.amount;
+          bannerUrl = data.bannerURL;
+          if (data.bannerURL) {
+            const bannerImg = document.querySelector('.input-upload#banner img');
+            bannerImg.src = data.bannerURL;
+          }
+        } else {
+          console.log("No such document!");
+        }
+      }).catch((error) => {
+        console.log("Error fetching data", error);
+      });
+    }
+
+
+    var count = 0;
+
+    function fetchOrders() {
+      const ordersCollectionRef = firebase.firestore().collection('users');
+      ordersCollectionRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const userData = doc.data();
+          userData.orders.forEach((order) => {
+            if (order.viewed === false) {
+              count++;
+            }
+          });
+        });
+        var badge = document.getElementById("notification-badge");
+        badge.textContent = count;
+      }).catch((error) => {
+        console.log("Error fetching order notification.");
+      });
+    }
+
+    fetchOrders();
+    fetchData();
+
+    // Function to sign out the admin
+    function adminOutUser() {
+      firebase.auth().signOut().then(function () {
+        console.log('admin signed out successfully');
+        showAlertWithNav('Admin signed out successfully!','index.html');
+      }).catch(function (error) {
+        console.error('Error signing out:', error);
+      });
+    }
+
+    // Function to fetch user data when the authentication state changes
+    function onAuthStateChanged(user) {
+      if (user) {
+        fetchUserData();
+      } else {
+        console.log("No user is signed in.");
+      }
+    }
+    firebase.auth().onAuthStateChanged(onAuthStateChanged);
+
+    function fetchUserData() {
+      var user = firebase.auth().currentUser;
+      if (user) {
+        var userId = user.uid;
+        var userDocRef = firestore.collection("admins").doc(userId);
+
+        userDocRef.get().then(function (doc) {
+          if (doc.exists) {
+            const data = doc.data();
+            if (data.profilePicUrl) {
+              var imageElement = document.getElementById("profile-pic");
+              imageElement.src = data.profilePicUrl;
+            }
+          } else {
+            console.log("No user data found for current user.");
+          }
+        }).catch(function (error) {
+          console.error("Error getting user document:", error);
+        });
+      } else {
+        console.log("No user is signed in.");
+      }
+    }
+
+  </script>
+</body>
+
+</html>
